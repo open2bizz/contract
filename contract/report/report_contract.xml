@@ -16,10 +16,10 @@
             <div class="page">
                 <div class="oe_structure" />
                 <t t-set="layout_document_title">
-                    <span t-if="doc.display_state == 'ended'">ENDED Contract # </span>
-                    <span t-elif="doc.display_state == 'to_renew'">Contract (To renew)# </span>
+                    <span t-if="o.display_state == 'ended'">ENDED Contract # </span>
+                    <span t-elif="o.display_state == 'to_renew'">Contract (To renew)# </span>
                     <span t-else="">Contract # </span>
-                    <span t-field="doc.name">SO0000</span>
+                    <span t-field="o.name">SO0000</span>
                 </t>
                 <div class="row mb-4" id="informations">
                     <div t-if="o.user_id" class="col" name="user">
@@ -43,9 +43,9 @@
                 <div class="row" id="invoice_info">
                     <t t-set="total" t-value="0" />
                     <div class="col-12">
-                        <p id="services_info">
+                        <h4 id="services_info">
                             <strong>Recurring Items</strong>
-                        </p>
+                        </h4>
                         <table class="table table-sm">
                             <thead>
                                 <tr>
@@ -151,12 +151,11 @@
                         </table>
                     </div>
                 </div>
-                <hr></hr>
                 <div class="row" id="modification_info" t-if="o.modification_ids">
                     <div class="col-12">
-                        <p id="modification_info_p">
+                        <h4 id="modification_info_p">
                             <strong>Modifications</strong>
-                        </p>
+                        </h4>
                         <table class="table table-sm">
                             <thead>
                                 <tr>
@@ -187,13 +186,8 @@
                         </table>
                     </div>
                 </div>
-                <hr></hr>
                 <div>
-                    <div class="row mt-4" id="note">
-                        <div>
-                            <strong>Notes: </strong>
-                        </div>
-                    </div>
+                    <p>Notes:</p>
                     <div class="row">
                         <p t-field="o.note" />
                     </div>

@@ -36,6 +36,7 @@ class ContractContract(models.Model):
     )
     code = fields.Char(
         string="Reference",
+        copy=False
     )
     group_id = fields.Many2one(
         string="Group",
