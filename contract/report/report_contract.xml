@@ -15,14 +15,31 @@
             </t>
             <div class="page">
                 <div class="oe_structure" />
-                <div class="row" id="header_info">
-                    <div class="col-3">
-                        <strong>Responsible: </strong>
-                        <p t-field="o.user_id" />
-                        <strong>Contract: </strong>
-                        <p t-field="o.code" />
+                <t t-set="layout_document_title">
+                    <span t-if="doc.display_state == 'ended'">ENDED Contract # </span>
+                    <span t-elif="doc.display_state == 'to_renew'">Contract (To renew)# </span>
+                    <span t-else="">Contract # </span>
+                    <span t-field="doc.name">SO0000</span>
+                </t>
+                <div class="row mb-4" id="informations">
+                    <div t-if="o.user_id" class="col" name="user">
+                        <strong>Responsible</strong>
+                        <div t-field="o.user_id">Mitchel Admin</div>
+                    </div>
+                    <div t-if="o.date_start" class="col" name="start_date">
+                        <strong >Start Date</strong>
+                        <div t-field="o.date_start" t-options="{&quot;widget&quot;: &quot;date&quot;}">2023-12-31</div>
+                    </div>
+                    <div t-if="o.date_end" class="col" name="end_date">
+                        <strong >End Date</strong>
+                        <div t-field="o.date_start" t-options="{&quot;widget&quot;: &quot;date&quot;}">2023-12-31</div>
+                    </div>
+                    <div t-if="o.code" class="col" name="code">
+                        <strong>Ref</strong>
+                        <div t-field="o.code">2023-12-31</div>
                     </div>
                 </div>
+
                 <div class="row" id="invoice_info">
                     <t t-set="total" t-value="0" />
                     <div class="col-12">
@@ -117,6 +134,24 @@
                         </table>
                     </div>
                 </div>
+                <div id="total" class="row" name="total">
+                    <div class="col-4 ml-auto">
+                        <table class="table table-sm">
+                            <tr class="border-black o_subtotal" style="">
+                                <td>
+                                    <strong>Total</strong>
+                                </td>
+                                <td class="text-right">
+                                    <span
+                                        t-esc="total"
+                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                    />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <hr></hr>
                 <div class="row" id="modification_info" t-if="o.modification_ids">
                     <div class="col-12">
                         <p id="modification_info_p">
@@ -152,23 +187,7 @@
                         </table>
                     </div>
                 </div>
-                <div id="total" class="row" name="total">
-                    <div class="col-4 ml-auto">
-                        <table class="table table-sm">
-                            <tr class="border-black o_subtotal" style="">
-                                <td>
-                                    <strong>Total</strong>
-                                </td>
-                                <td class="text-right">
-                                    <span
-                                        t-esc="total"
-                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'
-                                    />
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+                <hr></hr>
                 <div>
                     <div class="row mt-4" id="note">
                         <div>
