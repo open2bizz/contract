@@ -7,6 +7,7 @@
 # Copyright 2021 Tecnativa - Víctor Martínez
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import logging
+from datetime import timedelta
 
 from markupsafe import Markup
 
@@ -138,6 +139,12 @@ class ContractContract(models.Model):
         inverse_name="contract_id",
         string="Modifications",
     )
+    display_state = fields.Selection(
+        string="State",
+        selection=[("running", "Running"), ("to_renew", "To renew"), ("ended", "Ended")],
+        compute="_compute_display_state"
+    )
+
 
     def get_formview_id(self, access_uid=None):
         if self.contract_type == "sale":
@@ -298,12 +305,12 @@ class ContractContract(models.Model):
             "type": "ir.actions.act_window",
             "name": "Invoices",
             "res_model": "account.move",
-            "view_mode": "tree,kanban,form,calendar,pivot,graph,activity",
+            "view_mode": "list,kanban,form,calendar,pivot,graph,activity",
             "domain": [("id", "in", self._get_related_invoices().ids)],
             "context": ctx,
         }
         if tree_view and form_view:
-            action["views"] = [(tree_view.id, "tree"), (form_view.id, "form")]
+            action["views"] = [(tree_view.id, "list"), (form_view.id, "form")]
         return action
 
     @api.depends("contract_line_ids.date_end")
@@ -711,3 +718,13 @@ class ContractContract(models.Model):
                 "terminate_date": False,
             }
         )
+
+    def _compute_display_state(self):
+        # selection=[("running", "Running"), ("to_renew", "To renew"), ("ended", "Ended")]
+        for contract in self:
+            if contract.is_terminated or not contract.active:
+                contract.display_state = "ended"
+            elif contract.recurring_next_date <= (fields.Date.today() + timedelta.days(14)):
+                contract.display_state = "to_renew"
+            else:
+                contract.display_state = "running"

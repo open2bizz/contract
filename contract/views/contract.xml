@@ -6,30 +6,6 @@
         <field name="model">contract.contract</field>
         <field name="arch" type="xml">
             <form>
-                <field name="is_terminated" invisible="1" />
-                <field name="company_id" invisible="1" />
-                <div
-                    class="alert alert-danger"
-                    role="alert"
-                    style="margin-bottom:0px;"
-                    invisible="not is_terminated"
-                >
-                    <p>
-                        This contract was terminated for the reason
-                        <strong>
-                            <field
-                                name="terminate_reason_id"
-                                options="{'no_open':True}"
-                            />
-                        </strong>
-                        on
-                        <field name="terminate_date" />
-                        .
-                    </p>
-                    <p>
-                        <field name="terminate_comment" />
-                    </p>
-                </div>
                 <header>
                     <button
                         name="action_contract_send"
@@ -68,7 +44,34 @@
                         groups="contract.can_terminate_contract"
                     />
                     <button type="object" string="Preview" name="action_preview" />
+                    <field name="display_state" widget="statusbar"/>
                 </header>
+                <field name="is_terminated" invisible="1" />
+                <field name="company_id" invisible="1" />
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    style="margin-bottom:0px;"
+                    invisible="not is_terminated"
+                >
+                    <p>
+                        This contract was terminated for the reason
+                        <strong>
+                            <field
+                                name="terminate_reason_id"
+                                options="{'no_open':True}"
+                            />
+                        </strong>
+                        on
+                        <field name="terminate_date" />
+                        .
+                    </p>
+                </div>
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" invisible="not terminate_comment">
+                    <p>
+                        <field name="terminate_comment"/>
+                    </p>
+                </div>
                 <sheet string="Contract">
                     <field name="active" invisible="1" />
                     <div class="oe_button_box" name="button_box">
@@ -482,11 +485,7 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers" />
-                    <field name="activity_ids" widget="mail_activity" />
-                    <field name="message_ids" widget="mail_thread" />
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>

@@ -14,6 +14,8 @@ class ContractTemplate(models.Model):
     _inherit = "contract.abstract.contract"
     _description = "Contract Template"
 
+    active = fields.Boolean("Active", default=True)
+
     contract_line_ids = fields.One2many(
         comodel_name="contract.template.line",
         inverse_name="contract_id",
