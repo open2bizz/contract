@@ -32,6 +32,7 @@
         "data/template_mail_notification.xml",
         "data/mail_message_subtype.xml",
         "data/ir_ui_menu.xml",
+        "data/contract_sequence.xml",
         "wizards/contract_line_wizard.xml",
         "wizards/contract_manually_create_invoice.xml",
         "wizards/contract_contract_terminate.xml",

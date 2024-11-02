@@ -142,7 +142,8 @@ class ContractContract(models.Model):
     display_state = fields.Selection(
         string="State",
         selection=[("running", "Running"), ("to_renew", "To renew"), ("ended", "Ended")],
-        compute="_compute_display_state"
+        compute="_compute_display_state",
+        help="When state is To renew, the contract will end within 14 days"
     )
 
 
@@ -724,7 +725,7 @@ class ContractContract(models.Model):
         for contract in self:
             if contract.is_terminated or not contract.active:
                 contract.display_state = "ended"
-            elif contract.recurring_next_date <= (fields.Date.today() + timedelta.days(14)):
+            elif contract.recurring_next_date <= (fields.Date.today() + timedelta(days=14)):
                 contract.display_state = "to_renew"
             else:
                 contract.display_state = "running"

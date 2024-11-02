@@ -6,7 +6,7 @@
 # Copyright 2018 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 
 
 class ContractAbstractContract(models.AbstractModel):
@@ -18,7 +18,11 @@ class ContractAbstractContract(models.AbstractModel):
     # These fields will not be synced to the contract
     NO_SYNC = ["name", "partner_id", "company_id"]
 
-    name = fields.Char(required=True)
+    name = fields.Char(
+        required=True, copy=False, readonly=False,
+        index='trigram',
+        default=lambda self: _('New')
+    )
     # Needed for avoiding errors on several inherited behaviors
     partner_id = fields.Many2one(
         comodel_name="res.partner", string="Partner", index=True
@@ -80,3 +84,14 @@ class ContractAbstractContract(models.AbstractModel):
                 contract.journal_id = journal.id
             else:
                 contract.journal_id = None
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _("New")) == _("New"):
+                seq_date = fields.Datetime.context_timestamp(
+                    self, fields.Datetime.to_datetime(vals['date_order'])
+                ) if 'date_order' in vals else None
+                vals['name'] = self.env['ir.sequence'].with_company(vals.get('company_id')).next_by_code(
+                    'contract.abstract.contract', sequence_date=seq_date) or _("New")
+        return super().create(vals_list)

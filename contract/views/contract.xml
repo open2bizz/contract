@@ -101,8 +101,7 @@
                             <field
                                 name="name"
                                 class="oe_inline"
-                                readonly="is_terminated"
-                                placeholder="e.g. Contract XYZ"
+                                readonly="1"
                             />
                         </h3>
                     </div>
@@ -533,7 +532,7 @@
         <field name="model">contract.contract</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name" string="Name" />
+                <field name="name" string="Name"/>
                 <field name="code" />
                 <field name="journal_id" groups="account.group_account_user" />
                 <field name="partner_id" />
@@ -544,6 +543,7 @@
                 />
                 <field name="active" column_invisible="True" />
                 <field name="company_id" groups="base.group_multi_company" />
+                <field name="display_state" />
             </list>
         </field>
     </record>
