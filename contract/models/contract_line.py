@@ -879,8 +879,8 @@ class ContractLine(models.Model):
             lines = self.filtered(lambda line, c=contract: line.contract_id == c)
             msg = _(
                 "Contract line canceled: %s",
-                "<br/>- ".join(
-                    [f"<strong>{name}</strong>" for name in lines.mapped("name")]
+                "\n- ".join(
+                    [f"{name}" for name in lines.mapped("name")]
                 ),
             )
             contract.message_post(body=msg)
@@ -1063,10 +1063,10 @@ class ContractLine(models.Model):
         return super().get_view(view_id, view_type, **options)
 
     def unlink(self):
-        """stop unlink uncnacled lines"""
+        """stop unlink uncanceled or upcoming lines"""
         for record in self:
-            if not (record.is_canceled or record.display_type):
-                raise ValidationError(_("Contract line must be canceled before delete"))
+            if not (record.is_canceled or record.state == 'upcoming' or record.display_type):
+                raise ValidationError(_("Contract line must be upcoming or canceled to delete"))
         return super().unlink()
 
     def _get_quantity_to_invoice(

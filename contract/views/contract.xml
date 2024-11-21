@@ -383,6 +383,7 @@
                                         name="is_auto_renew"
                                         column_invisible="True"
                                     />
+                                    <field name="state" />
                                     <field name="is_canceled" column_invisible="True" />
                                     <button
                                         name="action_plan_successor"
@@ -437,7 +438,7 @@
                                 <list editable="bottom">
                                     <field name="date" />
                                     <field name="description" />
-                                    <field name="sent" />
+                                    <field name="sent" optional="hide"/>
                                 </list>
                             </field>
                         </page>

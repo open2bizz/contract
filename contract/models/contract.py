@@ -142,9 +142,10 @@ class ContractContract(models.Model):
     )
     display_state = fields.Selection(
         string="State",
-        selection=[("running", "Running"), ("to_renew", "To renew"), ("ended", "Ended")],
+        selection=[("running", "Running"), ("to_renew", "To renew"), ("ended", "Ended"),("mixed","Mixed")],
         compute="_compute_display_state",
-        help="When state is To renew, the contract will end within 14 days"
+        help="When state is To renew, the contract will end within 14 days, "
+             "when state is Mixed, the contract lines have different states"
     )
 
 
@@ -724,9 +725,28 @@ class ContractContract(models.Model):
     def _compute_display_state(self):
         # selection=[("running", "Running"), ("to_renew", "To renew"), ("ended", "Ended")]
         for contract in self:
-            if contract.is_terminated or not contract.active:
-                contract.display_state = "ended"
-            elif contract.recurring_next_date <= (fields.Date.today() + timedelta(days=14)):
-                contract.display_state = "to_renew"
+            if not contract.line_recurrence:
+                if contract.is_terminated or not contract.active:
+                    contract.display_state = "ended"
+                elif contract.recurring_next_date <= (fields.Date.today() + timedelta(days=14)):
+                    contract.display_state = "to_renew"
+                else:
+                    contract.display_state = "running"
             else:
-                contract.display_state = "running"
+                # STATE selection LINE = [
+                #     ("upcoming", "Upcoming"),
+                #     ("in-progress", "In-progress"),
+                #     ("to-renew", "To renew"),
+                #     ("upcoming-close", "Upcoming Close"),
+                #     ("closed", "Closed"),
+                #     ("canceled", "Canceled"),
+                # ],
+                if any(line.state == 'to-renew' for line in contract.contract_line_ids):
+                    contract.display_state = "to_renew"
+                elif any(line.state not in ('closed','cancelled') for line in contract.contract_line_ids):
+                    contract.display_state = "running"
+                elif all(line.state in ('closed', 'cancelled') for line in contract.contract_line_ids):
+                    contract.display_state = "ended"
+                else:
+                    contract.display_state = "mixed"
+
