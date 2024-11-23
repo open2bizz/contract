@@ -561,19 +561,15 @@
                 <field name="journal_id" />
                 <field name="pricelist_id" />
                 <separator />
-                <separator />
-                <filter
-                    name="not_finished"
-                    string="In progress"
-                    domain="['|', ('date_end', '&gt;=', context_today().strftime('%Y-%m-%d')), '&amp;', ('date_end', '=', False), ('recurring_next_date', '!=', False)]"
-                />
-                <filter
-                    name="finished"
-                    string="Finished"
-                    domain="[('date_end', '&lt;', context_today().strftime('%Y-%m-%d')), ('recurring_next_date', '=', False)]"
-                />
                 <field name="partner_id" />
                 <field name="commercial_partner_id" />
+                <separator />
+                <filter string="Upcoming" name="filter_upcoming" domain="[('status', '=', 'upcoming')]"/>
+                <filter string="Running" name="filter_running" domain="[('status', '=', 'running')]"/>
+                <filter string="To renew" name="filter_to_renew" domain="[('status', '=', 'to_renew')]"/>
+                <filter string="Ended" name="filter_ended" domain="[('status', '=', 'ended')]"/>
+                <filter string="Mixed" name="filter_mixed" domain="[('status', '=', 'mixed')]"/>
+                <separator />
                 <filter
                     string="Archived"
                     domain="[('active', '=', False)]"

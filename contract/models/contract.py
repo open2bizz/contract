@@ -142,8 +142,9 @@ class ContractContract(models.Model):
     )
     display_state = fields.Selection(
         string="State",
-        selection=[("running", "Running"), ("to_renew", "To renew"), ("ended", "Ended"),("mixed","Mixed")],
+        selection=[("upcoming", "Upcoming"),("running", "Running"), ("to_renew", "To renew"), ("ended", "Ended"),("mixed","Mixed")],
         compute="_compute_display_state",
+        search='_search_display_state',
         help="When state is To renew, the contract will end within 14 days, "
              "when state is Mixed, the contract lines have different states"
     )
@@ -728,7 +729,7 @@ class ContractContract(models.Model):
             if not contract.line_recurrence:
                 if contract.is_terminated or not contract.active:
                     contract.display_state = "ended"
-                elif contract.recurring_next_date <= (fields.Date.today() + timedelta(days=14)):
+                elif contract.date_end and contract.date_end <= (fields.Date.today() + timedelta(days=14)):
                     contract.display_state = "to_renew"
                 else:
                     contract.display_state = "running"
@@ -747,6 +748,24 @@ class ContractContract(models.Model):
                     contract.display_state = "running"
                 elif all(line.state in ('closed', 'cancelled') for line in contract.contract_line_ids):
                     contract.display_state = "ended"
+                elif all(line.state == 'upcoming' for line in contract.contract_line_ids):
+                    contract.display_state = "upcoming"
                 else:
                     contract.display_state = "mixed"
 
+    def _search_display_state(self, operator, value):
+        """
+        selection = upcoming
+                    running
+                    to_renew
+                    ended
+                    mixed
+        """
+        if operator not in ['=', '!=']:
+            return []
+        # Map selection values to logic
+        elif value in ('upcoming','running','to_renew','ended','mixed'):
+            domain = [('display_state', '=', value)]
+        else:
+            domain = []
+        return domain

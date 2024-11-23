@@ -895,9 +895,9 @@ class ContractLine(models.Model):
         for contract in self.mapped("contract_id"):
             lines = self.filtered(lambda line, c=contract: line.contract_id == c)
             msg = _(
-                "Contract line Un-canceled: %s",
+                "<p>Contract line Un-canceled: %s",
                 "<br/>- ".join(
-                    [f"<strong>{name}</strong>" for name in lines.mapped("name")]
+                    [f"<strong>{name}</strong>" for name in (lines.mapped("name"), "</p>")]
                 ),
             )
             contract.message_post(body=msg)
@@ -1021,12 +1021,12 @@ class ContractLine(models.Model):
                 new_line = rec._renew_extend_line(date_end)
             res |= new_line
             msg = _(
-                """Contract line for <strong>%(product)s</strong>
+                """<p>Contract line for <strong>%(product)s</strong>
                 renewed: <br/>
                 - <strong>Start</strong>: %(new_date_start)s
                 <br/>
                 - <strong>End</strong>: %(new_date_end)s
-                """
+                </p>"""
             ) % {
                 "product": rec.name,
                 "new_date_start": date_start,
