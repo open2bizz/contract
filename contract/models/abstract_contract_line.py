@@ -31,6 +31,7 @@ class ContractAbstractContractLine(models.AbstractModel):
     )
     automatic_price = fields.Boolean(
         string="Auto-price?",
+        default=True,
         help="If this is marked, the price will be obtained automatically "
         "applying the pricelist to the product. If not, you will be "
         "able to introduce a manual price",
