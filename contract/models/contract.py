@@ -144,7 +144,8 @@ class ContractContract(models.Model):
         string="State",
         selection=[("upcoming", "Upcoming"),("running", "Running"), ("to_renew", "To renew"), ("ended", "Ended"),("mixed","Mixed")],
         compute="_compute_display_state",
-        search='_search_display_state',
+        # ToDo: Not working FixMe
+        # search='_search_display_state',
         help="When state is To renew, the contract will end within 14 days, "
              "when state is Mixed, the contract lines have different states"
     )
@@ -753,6 +754,7 @@ class ContractContract(models.Model):
                 else:
                     contract.display_state = "mixed"
 
+    # ToDo: Not working FixMe
     def _search_display_state(self, operator, value):
         """
         selection = upcoming
