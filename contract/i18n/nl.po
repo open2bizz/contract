@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-23 14:32+0000\n"
-"PO-Revision-Date: 2024-11-23 15:44+0100\n"
+"PO-Revision-Date: 2024-11-23 15:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -543,7 +543,7 @@ msgstr "Annuleren"
 #. module: contract
 #: model_terms:ir.ui.view,arch_db:contract.contract_contract_form_view
 msgid "Cancel Contract Termination"
-msgstr "Contractsjabloon"
+msgstr "Annuleren Contractbeëindiging"
 
 #. module: contract
 #: model:ir.model.fields,field_description:contract.field_contract_line__is_cancel_allowed
@@ -677,19 +677,19 @@ msgstr "Contract -"
 #. module: contract
 #: model_terms:ir.ui.view,arch_db:contract.contract_contract_terminate_form_view
 msgid "Contract Contract Terminate"
-msgstr "Contractsjabloon"
+msgstr "Contract Contract beëindigen"
 
 #. module: contract
 #: model:ir.model,name:contract.model_contract_line
 #: model:ir.model.fields,field_description:contract.field_account_move_line__contract_line_id
 #: model:ir.model.fields,field_description:contract.field_contract_line_wizard__contract_line_id
 msgid "Contract Line"
-msgstr "Contractsjabloon"
+msgstr "Contractregel"
 
 #. module: contract
 #: model:ir.model,name:contract.model_contract_line_wizard
 msgid "Contract Line Wizard"
-msgstr "Contractsjabloon"
+msgstr "Contractlijn Wizard"
 
 #. module: contract
 #: model:ir.model.fields,help:contract.field_contract_line__predecessor_contract_line_id
@@ -704,7 +704,7 @@ msgstr "Maak handmatig een contract factuur aan"
 #. module: contract
 #: model:ir.model,name:contract.model_contract_manually_create_invoice
 msgid "Contract Manually Create Invoice Wizard"
-msgstr "Contractsjabloon"
+msgstr "Contract Wizard Handmatig factuur maken"
 
 #. module: contract
 #: model:ir.model,name:contract.model_contract_modification
@@ -719,18 +719,18 @@ msgstr "Contract wijziging template"
 #. module: contract
 #: model_terms:ir.ui.view,arch_db:contract.contract_contract_form_view
 msgid "Contract Name"
-msgstr "Contractsjabloon"
+msgstr "Naam contract"
 
 #. module: contract
 #: model:ir.model,name:contract.model_contract_tag
 #: model:ir.ui.menu,name:contract.contract_tag_menu
 msgid "Contract Tag"
-msgstr "Contractsjabloon"
+msgstr "Contract label"
 
 #. module: contract
 #: model:ir.actions.act_window,name:contract.contract_tag_act_window
 msgid "Contract Tags"
-msgstr "Contractsjabloon"
+msgstr "Contract labels"
 
 #. module: contract
 #: model:ir.model,name:contract.model_contract_template
@@ -743,12 +743,12 @@ msgstr "Contractsjabloon"
 #: model:ir.model,name:contract.model_contract_template_line
 #: model_terms:ir.ui.view,arch_db:contract.contract_template_line_form_view
 msgid "Contract Template Line"
-msgstr "Contractsjabloon"
+msgstr "Contractsjabloon Regel"
 
 #. module: contract
 #: model_terms:ir.ui.view,arch_db:contract.contract_template_form_view
 msgid "Contract Template Lines"
-msgstr "Contractsjabloon"
+msgstr "Contract Sjabloon Regels"
 
 #. module: contract
 #: model:ir.actions.act_window,name:contract.contract_template_action
@@ -761,12 +761,12 @@ msgstr "Contract Sjablonen"
 #: model:ir.model,name:contract.model_contract_terminate_reason
 #: model:ir.ui.menu,name:contract.contract_terminate_reason_menu
 msgid "Contract Termination Reason"
-msgstr "Contractsjabloon"
+msgstr "Reden contractbeëindiging"
 
 #. module: contract
 #: model:ir.model.fields,field_description:contract.field_contract_manually_create_invoice__contract_to_invoice_ids
 msgid "Contract To Invoice"
-msgstr "Contractsjabloon"
+msgstr "Contract Te factureren"
 
 #. module: contract
 #: model:ir.model.fields,field_description:contract.field_contract_manually_create_invoice__contract_to_invoice_count
@@ -780,7 +780,7 @@ msgstr "Factuur"
 #: model:ir.model.fields,field_description:contract.field_contract_template__contract_type
 #: model_terms:ir.ui.view,arch_db:contract.contract_template_search_view
 msgid "Contract Type"
-msgstr "Contractsjabloon"
+msgstr "Contract type"
 
 #. module: contract
 #. odoo-python
@@ -894,12 +894,12 @@ msgstr "Contract start"
 #. module: contract
 #: model:ir.model.fields,field_description:contract.field_contract_template__contract_line_ids
 msgid "Contract template lines"
-msgstr "Contractsjabloon"
+msgstr "Contractsjabloonregels"
 
 #. module: contract
 #: model:res.groups,name:contract.can_terminate_contract
 msgid "Contract: Can Terminate Contracts"
-msgstr "Contractsjabloon"
+msgstr "Contract: kan contracten beëindigen"
 
 #. module: contract
 #: model:ir.model.fields,field_description:contract.field_res_partner__contract_ids
