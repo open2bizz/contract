@@ -80,6 +80,7 @@ class ContractContract(models.Model):
         string="Responsible",
         index=True,
         default=lambda self: self.env.user,
+        tracking=1
     )
     create_invoice_visibility = fields.Boolean(
         compute="_compute_create_invoice_visibility"
@@ -99,9 +100,10 @@ class ContractContract(models.Model):
         comodel_name="res.partner",
         ondelete="restrict",
         domain="['|',('id', 'parent_of', partner_id), ('id', 'child_of', partner_id)]",
+        tracking=1
     )
     partner_id = fields.Many2one(
-        comodel_name="res.partner", inverse="_inverse_partner_id", required=True
+        comodel_name="res.partner", inverse="_inverse_partner_id", required=True, tracking=1
     )
 
     commercial_partner_id = fields.Many2one(
@@ -388,15 +390,17 @@ class ContractContract(models.Model):
 
     @api.onchange("partner_id", "company_id")
     def _onchange_partner_id(self):
+        default_pricelist_id = self.env['product.pricelist'].search([], limit=1)
         partner = (
             self.partner_id
             if not self.company_id
             else self.partner_id.with_company(self.company_id)
         )
-        self.pricelist_id = partner.property_product_pricelist.id
-        self.fiscal_position_id = partner.env[
-            "account.fiscal.position"
-        ]._get_fiscal_position(partner)
+        if partner and partner.property_product_pricelist:
+            self.pricelist_id = partner.property_product_pricelist.id
+        else:
+            self.pricelist_id = default_pricelist_id.id
+        self.fiscal_position_id = self.env['account.fiscal.position']._get_fiscal_position(partner)
         if self.contract_type == "purchase":
             self.payment_term_id = partner.property_supplier_payment_term_id
         else:
@@ -732,6 +736,8 @@ class ContractContract(models.Model):
                     contract.display_state = "ended"
                 elif contract.date_end and contract.date_end <= (fields.Date.today() + timedelta(days=14)):
                     contract.display_state = "to_renew"
+                elif contract.date_start and contract.date_start > fields.Date.today():
+                    contract.display_state = "upcoming"
                 else:
                     contract.display_state = "running"
             else:

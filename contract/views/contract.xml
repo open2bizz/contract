@@ -43,11 +43,11 @@
                         invisible="not is_terminated"
                         groups="contract.can_terminate_contract"
                     />
-                    <button type="object" string="Preview" name="action_preview" />
+                    <button type="object" string="Preview" name="action_preview"/>
                     <field name="display_state" widget="statusbar"/>
                 </header>
-                <field name="is_terminated" invisible="1" />
-                <field name="company_id" invisible="1" />
+                <field name="is_terminated" invisible="1"/>
+                <field name="company_id" invisible="1"/>
                 <div
                     class="alert alert-danger"
                     role="alert"
@@ -63,17 +63,18 @@
                             />
                         </strong>
                         on
-                        <field name="terminate_date" />
+                        <field name="terminate_date"/>
                         .
                     </p>
                 </div>
-                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;" invisible="not terminate_comment">
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
+                     invisible="not terminate_comment">
                     <p>
                         <field name="terminate_comment"/>
                     </p>
                 </div>
                 <sheet string="Contract">
-                    <field name="active" invisible="1" />
+                    <field name="active" invisible="1"/>
                     <div class="oe_button_box" name="button_box">
                         <button
                             name="action_show_invoices"
@@ -96,102 +97,67 @@
                         invisible="active"
                     />
                     <div class="oe_title">
-                        <label for="name" string="Contract Name" class="oe_edit_only" />
-                        <h3>
-                            <field
-                                name="name"
-                                class="oe_inline"
-                                readonly="1"
-                            />
-                        </h3>
+                        <h2>
+                            <field name="name" class="oe_inline" readonly="1"/>
+                        </h2>
                     </div>
                     <group name="main">
                         <group>
-                            <field name="commercial_partner_id" invisible="1" />
-                            <field
-                                name="partner_id"
-                                required="1"
-                                readonly="is_terminated"
-                            />
-                            <field name="pricelist_id" readonly="is_terminated" />
-                            <field name="payment_term_id" readonly="is_terminated" />
-                            <field name="user_id" readonly="is_terminated" />
+                            <field name="contract_type" invisible="1" required="1"/>
+                            <field name="commercial_partner_id" invisible="1"/>
+                            <field name="partner_id" required="1" readonly="is_terminated or display_state == 'running'"/>
+                            <field name="user_id" readonly="is_terminated"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                         </group>
                         <group>
-                            <field
-                                name="contract_template_id"
-                                readonly="is_terminated"
+                            <field name="contract_template_id" readonly="is_terminated or display_state == 'running'"
                                 domain="['|', ('contract_type', '=', contract_type), ('contract_type', '=', False)]"
-                                context="{'default_contract_type': contract_type}"
-                            />
-                            <field name="contract_type" invisible="1" required="1" />
-                            <field name="fiscal_position_id" readonly="is_terminated" />
-                            <field
-                                name="journal_id"
-                                required="1"
-                                readonly="is_terminated"
-                            />
-                            <field
-                                name="tag_ids"
-                                widget="many2many_tags"
-                                options="{'color_field': 'color'}"
-                            />
+                                context="{'default_contract_type': contract_type}"/>
+                            <field name="pricelist_id" readonly="is_terminated or display_state == 'running'"
+                                   groups="product.group_product_pricelist" options="{'no_open':True,'no_create': True}"/>
+                            <field name="invoice_partner_id" readonly="is_terminated" required="1"/>
                         </group>
                     </group>
-                    <group name="recurring_invoices">
+                    <group name="recurring_invoices" string="Recurrence">
                         <group>
-                            <field
-                                name="line_recurrence"
-                                class="oe_inline"
-                                readonly="line_recurrence and invoice_count != 0"
-                            />
+                            <field name="generation_type"/>
+                            <field name="line_recurrence" class="oe_inline" widget="boolean_toggle"
+                                readonly="line_recurrence and invoice_count != 0"/>
                         </group>
                         <group invisible="line_recurrence">
-                            <label for="recurring_interval" />
+                            <label for="recurring_interval"/>
                             <div class="o_row">
-                                <field
-                                    name="recurring_interval"
-                                    required="not line_recurrence"
-                                    class="oe_inline"
-                                    nolabel="1"
-                                />
-                                <field
-                                    name="recurring_rule_type"
-                                    required="not line_recurrence"
-                                    class="oe_inline"
-                                    nolabel="1"
-                                />
+                                <field name="recurring_interval" required="not line_recurrence" class="oe_inline"
+                                    nolabel="1"/>
+                                <field name="recurring_rule_type" required="not line_recurrence"
+                                    class="oe_inline" nolabel="1"/>
                             </div>
-                            <field
-                                name="recurring_invoicing_type"
-                                required="not line_recurrence"
-                            />
+                            <field name="recurring_invoicing_type" required="not line_recurrence"/>
+                            <div class="o_row">
+                                <label for="date_start"/>
+                                <field name="date_start" required="not line_recurrence"/>
+                                <label for="date_end"/>
+                                <field name="date_end"/>
+                            </div>
+                            <field name="recurring_next_date"/>
                         </group>
-                        <group invisible="line_recurrence">
-                            <field name="date_start" required="not line_recurrence" />
-                            <field name="date_end" />
-                            <field name="recurring_next_date" />
-                        </group>
-                    </group>
-                    <group col="4" name="recurring_type" string="Recurring Type">
-                        <field name="generation_type" />
                     </group>
                     <notebook>
                         <page name="recurring_invoice_line" string="Recurring Invoices">
-                            <field
-                                name="contract_line_fixed_ids"
-                                readonly="is_terminated"
-                                invisible="line_recurrence"
-                                widget="section_and_note_one2many"
-                                context="{'default_contract_type': contract_type, 'default_recurring_rule_type': recurring_rule_type, 'default_recurring_invoicing_type': recurring_invoicing_type, 'default_recurring_interval': recurring_interval, 'default_date_start': date_start, 'default_recurring_next_date': recurring_next_date}"
-                            >
+                            <field name="contract_line_fixed_ids" readonly="is_terminated"
+                                invisible="line_recurrence" widget="section_and_note_one2many"
+                                context="{
+                                    'default_contract_type': contract_type,
+                                    'default_recurring_rule_type': recurring_rule_type,
+                                    'default_recurring_invoicing_type': recurring_invoicing_type,
+                                    'default_recurring_interval': recurring_interval,
+                                    'default_date_start': date_start,
+                                    'default_recurring_next_date': recurring_next_date}">
                                 <list
-                                    decoration-muted="is_canceled"
-                                    decoration-info="create_invoice_visibility and not is_canceled"
-                                    editable="bottom"
-                                >
+                                    decoration-muted="is_canceled" editable="bottom"
+                                    decoration-info="create_invoice_visibility and not is_canceled">
                                     <control>
-                                        <create string="Add a line" />
+                                        <create string="Add a line"/>
                                         <create
                                             string="Add a section"
                                             context="{'default_display_type': 'line_section'}"
@@ -201,25 +167,25 @@
                                             context="{'default_display_type': 'line_note'}"
                                         />
                                     </control>
-                                    <field name="currency_id" column_invisible="True" />
+                                    <field name="currency_id" column_invisible="True"/>
                                     <field
                                         name="display_type"
                                         column_invisible="True"
                                     />
-                                    <field name="sequence" widget="handle" />
-                                    <field name="product_id" />
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
                                     <field
                                         name="product_uom_category_id"
                                         column_invisible="True"
                                     />
-                                    <field name="name" widget="section_and_note_text" />
+                                    <field name="name" widget="section_and_note_text"/>
                                     <field
                                         name="analytic_distribution"
                                         widget="analytic_distribution"
                                         groups="analytic.group_analytic_accounting"
                                     />
-                                    <field name="quantity" />
-                                    <field name="uom_id" />
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
                                     <field
                                         name="automatic_price"
                                         column_invisible="parent.contract_type == 'purchase'"
@@ -236,7 +202,7 @@
                                         name="discount"
                                         groups="product.group_discount_per_so_line"
                                     />
-                                    <field name="price_subtotal" />
+                                    <field name="price_subtotal"/>
                                     <field
                                         name="recurring_interval"
                                         column_invisible="True"
@@ -253,8 +219,8 @@
                                         name="recurring_next_date"
                                         column_invisible="True"
                                     />
-                                    <field name="date_start" column_invisible="True" />
-                                    <field name="date_end" />
+                                    <field name="date_start" column_invisible="True"/>
+                                    <field name="date_end"/>
                                     <field
                                         name="last_date_invoiced"
                                         groups="base.group_no_one"
@@ -279,7 +245,7 @@
                                         name="is_un_cancel_allowed"
                                         column_invisible="True"
                                     />
-                                    <field name="is_canceled" column_invisible="True" />
+                                    <field name="is_canceled" column_invisible="True"/>
                                 </list>
                             </field>
                             <field
@@ -294,7 +260,7 @@
                                     decoration-info="create_invoice_visibility and not is_canceled"
                                 >
                                     <control>
-                                        <create string="Add a line" />
+                                        <create string="Add a line"/>
                                         <create
                                             string="Add a section"
                                             context="{'default_display_type': 'line_section'}"
@@ -304,21 +270,21 @@
                                             context="{'default_display_type': 'line_note'}"
                                         />
                                     </control>
-                                    <field name="currency_id" column_invisible="True" />
+                                    <field name="currency_id" column_invisible="True"/>
                                     <field
                                         name="display_type"
                                         column_invisible="True"
                                     />
-                                    <field name="sequence" widget="handle" />
-                                    <field name="product_id" />
-                                    <field name="name" widget="section_and_note_text" />
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="name" widget="section_and_note_text"/>
                                     <field
                                         name="analytic_distribution"
                                         widget="analytic_distribution"
                                         groups="analytic.group_analytic_accounting"
                                     />
-                                    <field name="quantity" />
-                                    <field name="uom_id" />
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
                                     <field
                                         name="automatic_price"
                                         column_invisible="parent.contract_type == 'purchase'"
@@ -335,7 +301,7 @@
                                         name="discount"
                                         groups="product.group_discount_per_so_line"
                                     />
-                                    <field name="price_subtotal" />
+                                    <field name="price_subtotal"/>
                                     <field
                                         name="recurring_interval"
                                         column_invisible="True"
@@ -348,9 +314,9 @@
                                         name="recurring_invoicing_type"
                                         column_invisible="True"
                                     />
-                                    <field name="date_start" required="1" />
-                                    <field name="date_end" />
-                                    <field name="recurring_next_date" required="1" />
+                                    <field name="date_start" required="1"/>
+                                    <field name="date_end"/>
+                                    <field name="recurring_next_date" required="1"/>
                                     <field
                                         name="last_date_invoiced"
                                         groups="base.group_no_one"
@@ -383,8 +349,8 @@
                                         name="is_auto_renew"
                                         column_invisible="True"
                                     />
-                                    <field name="state" />
-                                    <field name="is_canceled" column_invisible="True" />
+                                    <field name="state"/>
+                                    <field name="is_canceled" column_invisible="True"/>
                                     <button
                                         name="action_plan_successor"
                                         string="Plan Start"
@@ -431,55 +397,41 @@
                                     />
                                 </list>
                             </field>
-                            <field name="note" />
+                            <field name="note"/>
                         </page>
                         <page name="modications" string="Modifications">
                             <field name="modification_ids" readonly="is_terminated">
                                 <list editable="bottom">
-                                    <field name="date" />
-                                    <field name="description" />
+                                    <field name="date"/>
+                                    <field name="description"/>
                                     <field name="sent" optional="hide"/>
                                 </list>
                             </field>
                         </page>
                         <page name="info" string="Other Information">
-                            <field name="create_invoice_visibility" invisible="1" />
+                            <field name="create_invoice_visibility" invisible="1"/>
                             <group>
-                                <field name="code" readonly="is_terminated" />
-                                <field name="group_id" readonly="is_terminated" />
-                                <field
-                                    name="company_id"
-                                    readonly="is_terminated"
-                                    options="{'no_create': True}"
-                                    groups="base.group_multi_company"
-                                />
-                                <field
-                                    name="currency_id"
-                                    groups="base.group_multi_currency"
-                                />
-                                <field
-                                    name="invoice_partner_id"
-                                    readonly="is_terminated"
-                                    required="1"
-                                />
+                                <group>
+                                    <field name="code" readonly="is_terminated"/>
+                                    <field name="group_id" readonly="is_terminated"/>
+                                    <field name="company_id" readonly="is_terminated"
+                                        options="{'no_create': True}" groups="base.group_multi_company"/>
+                                    <field name="currency_id" groups="base.group_multi_currency"/>
+                                </group>
+                                <group>
+                                    <field name="payment_term_id" readonly="is_terminated"/>
+                                    <field name="fiscal_position_id" readonly="is_terminated"/>
+                                    <field name="journal_id" required="1" readonly="is_terminated"/>
+                                </group>
+
                             </group>
-                            <group
-                                string="Legend (for the markers inside invoice lines description)"
-                                name="group_legend"
-                            >
+                            <group string="Legend (for the markers inside invoice lines description)"
+                                   name="group_legend">
                                 <p colspan="2">
-                                    <strong>#START#</strong>
-                                    : Start
-                                    date
-                                    of the
-                                    invoiced period
+                                    <strong>#START#</strong>: Start date of the invoiced period
                                 </p>
                                 <p colspan="2">
-                                    <strong>#END#</strong>
-                                    : End date
-                                    of
-                                    the
-                                    invoiced period
+                                    <strong>#END#</strong>: End date of the invoiced period
                                 </p>
                             </group>
                         </page>
@@ -493,15 +445,17 @@
     <record id="contract_contract_customer_form_view" model="ir.ui.view">
         <field name="name">contract.contract customer form view (in contract)</field>
         <field name="model">contract.contract</field>
-        <field name="inherit_id" ref="contract_contract_form_view" />
+        <field name="inherit_id" ref="contract_contract_form_view"/>
         <field name="mode">primary</field>
-        <field name="priority" eval="20" />
+        <field name="priority" eval="20"/>
         <field name="arch" type="xml">
             <field name="partner_id" position="attributes">
                 <attribute name="string">Customer</attribute>
                 <attribute
                     name="context"
-                >{'default_customer_rank': 1, 'default_supplier_rank': 0, 'res_partner_search_mode': 'customer', 'show_vat': True}</attribute>
+                >{'default_customer_rank': 1, 'default_supplier_rank': 0, 'res_partner_search_mode': 'customer',
+                    'show_vat': True}
+                </attribute>
             </field>
             <field name="journal_id" position="attributes">
                 <attribute name="domain">[('type', '=', 'sale')]</attribute>
@@ -512,15 +466,17 @@
     <record id="contract_contract_supplier_form_view" model="ir.ui.view">
         <field name="name">contract.contract supplier form view (in contract)</field>
         <field name="model">contract.contract</field>
-        <field name="inherit_id" ref="contract_contract_form_view" />
+        <field name="inherit_id" ref="contract_contract_form_view"/>
         <field name="mode">primary</field>
-        <field name="priority" eval="20" />
+        <field name="priority" eval="20"/>
         <field name="arch" type="xml">
             <field name="partner_id" position="attributes">
                 <attribute name="string">Supplier</attribute>
                 <attribute
                     name="context"
-                >{'default_customer_rank': False, 'default_supplier_rank': 1, 'res_partner_search_mode': 'supplier', 'show_vat': True}</attribute>
+                >{'default_customer_rank': False, 'default_supplier_rank': 1, 'res_partner_search_mode': 'supplier',
+                    'show_vat': True}
+                </attribute>
             </field>
             <field name="journal_id" position="attributes">
                 <attribute name="domain">[('type', '=', 'purchase')]</attribute>
@@ -534,17 +490,17 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name" string="Name"/>
-                <field name="code" />
-                <field name="journal_id" groups="account.group_account_user" />
-                <field name="partner_id" />
+                <field name="code"/>
+                <field name="journal_id" groups="account.group_account_user"/>
+                <field name="partner_id"/>
                 <field
                     name="tag_ids"
                     widget="many2many_tags"
                     options="{'color_field': 'color'}"
                 />
-                <field name="active" column_invisible="True" />
-                <field name="company_id" groups="base.group_multi_company" />
-                <field name="display_state" />
+                <field name="active" column_invisible="True"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="display_state"/>
             </list>
         </field>
     </record>
@@ -558,12 +514,12 @@
                     name="name"
                     filter_domain="['|', ('name','ilike',self), ('code','ilike',self)]"
                 />
-                <field name="journal_id" />
-                <field name="pricelist_id" />
-                <separator />
-                <field name="partner_id" />
-                <field name="commercial_partner_id" />
-                <separator />
+                <field name="journal_id"/>
+                <field name="pricelist_id"/>
+                <separator/>
+                <field name="partner_id"/>
+                <field name="commercial_partner_id"/>
+                <separator/>
                 <filter
                     name="not_finished"
                     string="In progress"
@@ -575,12 +531,12 @@
                     domain="[('date_end', '&lt;', context_today().strftime('%Y-%m-%d')), ('recurring_next_date', '=', False)]"
                 />
                 <!-- ToDo: Fix search function -->
-<!--                <filter string="Upcoming" name="filter_upcoming" domain="[('display_state', '=', 'upcoming')]"/>-->
-<!--                <filter string="Running" name="filter_running" domain="[('display_state', '=', 'running')]"/>-->
-<!--                <filter string="To renew" name="filter_to_renew" domain="[('display_state', '=', 'to_renew')]"/>-->
-<!--                <filter string="Ended" name="filter_ended" domain="[('display_state', '=', 'ended')]"/>-->
-<!--                <filter string="Mixed" name="filter_mixed" domain="[('display_state', '=', 'mixed')]"/>-->
-                <separator />
+                <!--                <filter string="Upcoming" name="filter_upcoming" domain="[('display_state', '=', 'upcoming')]"/>-->
+                <!--                <filter string="Running" name="filter_running" domain="[('display_state', '=', 'running')]"/>-->
+                <!--                <filter string="To renew" name="filter_to_renew" domain="[('display_state', '=', 'to_renew')]"/>-->
+                <!--                <filter string="Ended" name="filter_ended" domain="[('display_state', '=', 'ended')]"/>-->
+                <!--                <filter string="Mixed" name="filter_mixed" domain="[('display_state', '=', 'mixed')]"/>-->
+                <separator/>
                 <filter
                     string="Archived"
                     domain="[('active', '=', False)]"
@@ -625,7 +581,7 @@
             'search_default_not_finished':1,
             'default_contract_type': 'sale'}
         </field>
-        <field name="search_view_id" ref="contract_contract_search_view" />
+        <field name="search_view_id" ref="contract_contract_search_view"/>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 Click to create a new contract.
@@ -633,16 +589,16 @@
         </field>
     </record>
     <record id="action_customer_contract_view_tree" model="ir.actions.act_window.view">
-        <field name="sequence" eval="1" />
+        <field name="sequence" eval="1"/>
         <field name="view_mode">list</field>
-        <field name="view_id" ref="contract_contract_tree_view" />
-        <field name="act_window_id" ref="action_customer_contract" />
+        <field name="view_id" ref="contract_contract_tree_view"/>
+        <field name="act_window_id" ref="action_customer_contract"/>
     </record>
     <record id="action_customer_contract_view_form" model="ir.actions.act_window.view">
-        <field name="sequence" eval="2" />
+        <field name="sequence" eval="2"/>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="contract_contract_customer_form_view" />
-        <field name="act_window_id" ref="action_customer_contract" />
+        <field name="view_id" ref="contract_contract_customer_form_view"/>
+        <field name="act_window_id" ref="action_customer_contract"/>
     </record>
     <menuitem
         id="menu_contract_contract_customer"
@@ -661,7 +617,7 @@
             'search_default_not_finished':1,
             'default_contract_type': 'purchase'}
         </field>
-        <field name="search_view_id" ref="contract_contract_search_view" />
+        <field name="search_view_id" ref="contract_contract_search_view"/>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 Click to create a new contract.
@@ -669,16 +625,16 @@
         </field>
     </record>
     <record id="action_supplier_contract_view_tree" model="ir.actions.act_window.view">
-        <field name="sequence" eval="1" />
+        <field name="sequence" eval="1"/>
         <field name="view_mode">list</field>
-        <field name="view_id" ref="contract_contract_tree_view" />
-        <field name="act_window_id" ref="action_supplier_contract" />
+        <field name="view_id" ref="contract_contract_tree_view"/>
+        <field name="act_window_id" ref="action_supplier_contract"/>
     </record>
     <record id="action_supplier_contract_view_form" model="ir.actions.act_window.view">
-        <field name="sequence" eval="2" />
+        <field name="sequence" eval="2"/>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="contract_contract_supplier_form_view" />
-        <field name="act_window_id" ref="action_supplier_contract" />
+        <field name="view_id" ref="contract_contract_supplier_form_view"/>
+        <field name="act_window_id" ref="action_supplier_contract"/>
     </record>
     <menuitem
         id="menu_contract_contract_supplier"
