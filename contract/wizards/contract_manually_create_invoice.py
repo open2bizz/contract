@@ -81,6 +81,6 @@ class ContractManuallyCreateInvoice(models.TransientModel):
             "name": _("Invoices"),
             "res_model": "account.move",
             "domain": [("id", "in", invoices.ids)],
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "context": self.env.context,
         }
